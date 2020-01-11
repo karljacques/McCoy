@@ -1,7 +1,7 @@
-import {provide} from 'inversify-binding-decorators';
-import {Application, Loader} from 'pixi.js';
+import {Application, Container, Loader} from 'pixi.js';
+import {sharedProvide} from "../util/SharedProvide";
 
-@provide(RenderApplication)
+@sharedProvide(RenderApplication)
 export class RenderApplication {
     protected application = new Application();
 
@@ -12,5 +12,9 @@ export class RenderApplication {
 
     public getLoader(): Loader {
         return this.application.loader;
+    }
+
+    public getStage(): Container {
+        return this.application.stage;
     }
 }

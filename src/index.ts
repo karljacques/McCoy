@@ -1,8 +1,11 @@
 import "reflect-metadata";
-import {Engine} from "@nova-engine/ecs";
+import {Engine, Entity} from "@nova-engine/ecs";
 import {RenderingSystem} from "./system/render/RenderingSystem";
 import {Container} from "inversify";
 import {buildProviderModule} from "inversify-binding-decorators";
+import {RenderApplication} from "./services/RenderApplication";
+import {SpriteRenderComponent} from "./components/SpriteRenderComponent";
+import {Sprite} from 'pixi.js';
 
 const container = new Container();
 
@@ -19,3 +22,20 @@ const engine = new Engine();
 const renderingSystem = container.get(RenderingSystem);
 
 engine.addSystem(renderingSystem);
+
+const renderApplication = container.get(RenderApplication);
+const loader = renderApplication.getLoader();
+
+loader.add('cat', 'assets/cat.png');
+loader.load((loader, resources) => {
+
+    const entity = new Entity();
+    entity.putComponent(SpriteRenderComponent);
+
+    const component = entity.getComponent(SpriteRenderComponent);
+
+    component.sprite = new Sprite(resources.cat.texture);
+
+    engine.addEntity(entity);
+    renderApplication.getStage().addChild(component.sprite);
+});
