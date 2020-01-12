@@ -9,30 +9,35 @@ import {WorldPositionComponent} from "../../components/WorldPositionComponent";
 export class WallEntityFactory {
     @inject(WallSegmentPool) protected wallSegmentPool: WallSegmentPool;
 
+    private currentWidth: number = 0;
+
     public createWall(): Entity {
         const entity = new Entity();
 
         entity.putComponent(WorldPositionComponent);
         const tileMapComponent = entity.putComponent(TileMapComponent);
-        const wallLength = Math.random() * 5;
+        const wallLength = Math.random() * 7;
+        
+        this.addSpriteToWall(tileMapComponent, 'FRONT_EDGE');
+        this.addSpriteToWall(tileMapComponent, 'WINDOW');
 
-        let currentWidth = 0;
+        const centralWindowIndex = wallLength % 2 === 0 ? null : (wallLength) / 2;
 
-        const frontEdge = this.wallSegmentPool.getSprite('FRONT_EDGE');
-        tileMapComponent.addSprite(frontEdge, currentWidth, 0);
-
-        currentWidth += frontEdge.sprite.texture.width;
         for (let i = 0; i < wallLength; i++) {
-            const sprite = this.wallSegmentPool.getSprite('WINDOW');
+            const type = (i === centralWindowIndex) ? 'WINDOW' : 'DECORATION';
 
-            tileMapComponent.addSprite(sprite, currentWidth, 0);
-            currentWidth += sprite.sprite.texture.width;
+            this.addSpriteToWall(tileMapComponent, type);
         }
-
-        const backEdge = this.wallSegmentPool.getSprite('BACK_EDGE');
-        tileMapComponent.addSprite(backEdge, currentWidth, 0);
-
+        this.addSpriteToWall(tileMapComponent, 'WINDOW');
+        this.addSpriteToWall(tileMapComponent, 'BACK_EDGE');
 
         return entity;
+    }
+
+    protected addSpriteToWall(tileMapComponent: TileMapComponent, type: string) {
+        const sprite = this.wallSegmentPool.getSprite(type);
+        tileMapComponent.addSprite(sprite, this.currentWidth, 0);
+        this.currentWidth += sprite.sprite.texture.width;
+
     }
 }

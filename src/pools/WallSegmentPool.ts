@@ -16,6 +16,10 @@ export class WallSegmentPool {
         this.createSprites('window_01', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
         this.createSprites('window_02', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
 
+        this.createSprites('decoration_01', 6, 'DECORATION');
+        this.createSprites('decoration_02', 6, 'DECORATION');
+        this.createSprites('decoration_03', 6, 'DECORATION');
+
         this.createSprites('edge_01', 2, 'FRONT_EDGE');
         this.createSprites('edge_02', 2, 'BACK_EDGE', true);
 
