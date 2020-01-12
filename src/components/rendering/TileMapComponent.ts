@@ -1,14 +1,9 @@
 import {RenderableComponent} from "./RenderableComponent";
+import {TypedSprite} from "../../types/TypedSprite";
 import Container = PIXI.Container;
-import Sprite = PIXI.Sprite;
-
-interface TypedSprite {
-    sprite: Sprite,
-    type: string
-}
 
 export class TileMapComponent extends RenderableComponent {
-    protected _sprites: Array<TypedSprite> = [];
+    private _sprites: Array<TypedSprite> = [];
 
     private _stage: Container = new Container();
 
@@ -21,14 +16,15 @@ export class TileMapComponent extends RenderableComponent {
         this._stage.position.y = y;
     }
 
-    public addSprite(sprite: Sprite, x: number, y: number, type: string) {
-        this._stage.addChild(sprite);
-        sprite.position.x = x;
-        sprite.position.y = y;
+    get sprites(): Array<TypedSprite> {
+        return this._sprites;
+    }
 
-        this._sprites.push({
-            sprite,
-            type
-        });
+    public addSprite(sprite: TypedSprite, x: number, y: number) {
+        this._stage.addChild(sprite.sprite);
+        sprite.sprite.position.x = x;
+        sprite.sprite.position.y = y;
+
+        this._sprites.push(sprite);
     }
 }

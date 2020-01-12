@@ -1,6 +1,7 @@
 import {provide} from "inversify-binding-decorators";
 import {WallSpriteFactory} from "../factories/game/WallSpriteFactory";
 import {inject} from "inversify";
+import {TypedSprite} from "../types/TypedSprite";
 import Sprite = PIXI.Sprite;
 
 const shuffle = require('shuffle-array');
@@ -9,29 +10,43 @@ const shuffle = require('shuffle-array');
 export class WallSegmentPool {
     static readonly WINDOW_COUNT = 6;
 
-    protected _windows: Array<Sprite> = [];
+    protected _spriteTypes: Record<string, Array<Sprite>> = {};
 
     constructor(@inject(WallSpriteFactory) protected wallSpriteFactory: WallSpriteFactory) {
-        this.createWindows('window_01', WallSegmentPool.WINDOW_COUNT);
-        this.createWindows('window_02', WallSegmentPool.WINDOW_COUNT);
+        this.createSprites('window_01', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
+        this.createSprites('window_02', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
 
-        shuffle(this._windows);
-    }
-
-    public getWindow(): Sprite {
-        return this._windows.pop();
-    }
-
-    public giveBackWindow(sprite: Sprite): void {
-        sprite.position.x = 0;
-        sprite.position.y = 0;
-
-        this._windows.push(sprite);
-    }
-
-    protected createWindows(textureName: string, count: number) {
-        for (let i = 0; i < count; i++) {
-            this._windows.push(this.wallSpriteFactory.createSprite(textureName));
+        for (let key in this._spriteTypes) {
+            if (this._spriteTypes.hasOwnProperty(key)) {
+                shuffle(this._spriteTypes[key]);
+            }
         }
     }
+
+    public getSprite(type: string): TypedSprite {
+        const sprite = this._spriteTypes[type].pop();
+
+        return {
+            sprite,
+            type
+        };
+    }
+
+    public giveBackSprite(sprite: TypedSprite): void {
+        sprite.sprite.position.x = 0;
+        sprite.sprite.position.y = 0;
+
+        this._spriteTypes[sprite.type].push(sprite.sprite);
+    }
+
+    protected createSprites(textureName: string, count: number, type: string) {
+        if (!this._spriteTypes.hasOwnProperty(type)) {
+            this._spriteTypes[type] = [];
+        }
+
+        for (let i = 0; i < count; i++) {
+            this._spriteTypes[type].push(this.wallSpriteFactory.createSprite(textureName));
+        }
+    }
+
 }
