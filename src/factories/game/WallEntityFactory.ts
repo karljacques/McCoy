@@ -3,6 +3,7 @@ import {inject} from "inversify";
 import {WallSegmentPool} from "../../pools/WallSegmentPool";
 import {Entity} from "@nova-engine/ecs";
 import {TileMapComponent} from "../../components/rendering/TileMapComponent";
+import {WorldPositionComponent} from "../../components/WorldPositionComponent";
 
 @provide(WallEntityFactory)
 export class WallEntityFactory {
@@ -11,6 +12,7 @@ export class WallEntityFactory {
     public createWall(): Entity {
         const entity = new Entity();
 
+        entity.putComponent(WorldPositionComponent);
         const tileMapComponent = entity.putComponent(TileMapComponent);
         const wallLength = Math.random() * 5;
 

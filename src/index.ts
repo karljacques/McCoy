@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {Engine} from "@nova-engine/ecs";
-import {SideScrollingBackgroundRenderingSystem} from "./system/render/SideScrollingBackgroundRenderingSystem";
+import {SideScrollingCameraRenderingSystem} from "./system/render/SideScrollingCameraRenderingSystem";
 import {Container} from "inversify";
 import {buildProviderModule} from "inversify-binding-decorators";
 import {RenderApplication} from "./services/RenderApplication";
@@ -10,6 +10,7 @@ import {SideScrollingBackgroundLayerFactory} from "./factories/render/SideScroll
 import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerComponent";
 import {WallEntityFactory} from "./factories/game/WallEntityFactory";
 import {TileMapComponent} from "./components/rendering/TileMapComponent";
+import {WorldPositionComponent} from "./components/WorldPositionComponent";
 
 const container = new Container();
 
@@ -23,7 +24,7 @@ const engine = new Engine();
 // Instantiate our rendering system, which uses PixiJS and register it with the engine
 // The engine will call the update() method of the system every game loop
 // It also calls the onAttach hook
-const renderingSystem = container.get(SideScrollingBackgroundRenderingSystem);
+const renderingSystem = container.get(SideScrollingCameraRenderingSystem);
 
 engine.addSystem(renderingSystem);
 
@@ -43,7 +44,7 @@ loader.load((loader, resources) => {
     const bgFar = backgroundFactory.createBackdropLayer(resources.bgFar, 3);
     const bgMid = backgroundFactory.createBackdropLayer(
         resources.bgMid,
-        1,
+        2,
         PIXI.SCALE_MODES.NEAREST,
         128
     );
@@ -58,7 +59,7 @@ loader.load((loader, resources) => {
     const wallEntityFactory = container.get(WallEntityFactory);
     const entity = wallEntityFactory.createWall();
 
-    entity.getComponent(TileMapComponent).stage.position.y = 128;
+    entity.getComponent(WorldPositionComponent).y = 196;
 
     stage.addChild(entity.getComponent(TileMapComponent).stage);
 

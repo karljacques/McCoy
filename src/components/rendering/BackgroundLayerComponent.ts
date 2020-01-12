@@ -1,7 +1,7 @@
-import {Component} from "@nova-engine/ecs";
+import {RenderableComponent} from "./RenderableComponent";
 import TilingSprite = PIXI.TilingSprite;
 
-export class BackgroundLayerComponent implements Component {
+export class BackgroundLayerComponent extends RenderableComponent {
     private _sprite: TilingSprite;
 
     get sprite(): PIXI.TilingSprite {
@@ -20,5 +20,9 @@ export class BackgroundLayerComponent implements Component {
 
     set distance(value: number) {
         this._distance = value;
+    }
+
+    setScreenPosition(x: number, y: number): void {
+        this.sprite.tilePosition.x = x / this.distance;
     }
 }
