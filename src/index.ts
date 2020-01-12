@@ -8,6 +8,8 @@ import {Container as PIXIContainer} from 'pixi.js';
 import './styles/main.css';
 import {SideScrollingBackgroundLayerFactory} from "./factories/render/SideScrollingBackgroundLayerFactory";
 import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerComponent";
+import {WallEntityFactory} from "./factories/game/WallEntityFactory";
+import {TileMapComponent} from "./components/rendering/TileMapComponent";
 
 const container = new Container();
 
@@ -31,6 +33,8 @@ const loader = renderApplication.getLoader();
 loader.add('bgFar', 'assets/bg-far.png');
 loader.add('bgMid', 'assets/bg-mid.png');
 
+loader.add('wall', 'assets/wall.json');
+
 loader.load((loader, resources) => {
     const stage = new PIXIContainer();
     resources.bgMid.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
@@ -44,11 +48,21 @@ loader.load((loader, resources) => {
         128
     );
 
+
     stage.addChild(bgFar.getComponent(BackgroundLayerComponent).sprite);
     stage.addChild(bgMid.getComponent(BackgroundLayerComponent).sprite);
 
     engine.addEntity(bgMid);
     engine.addEntity(bgFar);
+
+    const wallEntityFactory = container.get(WallEntityFactory);
+    const entity = wallEntityFactory.createWall();
+
+    entity.getComponent(TileMapComponent).stage.position.y = 128;
+
+    stage.addChild(entity.getComponent(TileMapComponent).stage);
+
+    engine.addEntity(entity);
 
     renderApplication.getTicker().add(() => {
         const elapsedMs = renderApplication.getTicker().elapsedMS;
