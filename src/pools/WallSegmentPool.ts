@@ -16,6 +16,10 @@ export class WallSegmentPool {
         this.createSprites('window_01', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
         this.createSprites('window_02', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
 
+        this.createSprites('edge_01', 2, 'FRONT_EDGE');
+        this.createSprites('edge_02', 2, 'BACK_EDGE', true);
+
+
         for (let key in this._spriteTypes) {
             if (this._spriteTypes.hasOwnProperty(key)) {
                 shuffle(this._spriteTypes[key]);
@@ -39,13 +43,18 @@ export class WallSegmentPool {
         this._spriteTypes[sprite.type].push(sprite.sprite);
     }
 
-    protected createSprites(textureName: string, count: number, type: string) {
+    protected createSprites(textureName: string, count: number, type: string, flip: boolean = false) {
         if (!this._spriteTypes.hasOwnProperty(type)) {
             this._spriteTypes[type] = [];
         }
 
         for (let i = 0; i < count; i++) {
-            this._spriteTypes[type].push(this.wallSpriteFactory.createSprite(textureName));
+            const sprite = this.wallSpriteFactory.createSprite(textureName);
+            if (flip) {
+                sprite.anchor.x = 1;
+                sprite.scale.x = -1;
+            }
+            this._spriteTypes[type].push(sprite);
         }
     }
 

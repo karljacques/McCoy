@@ -4,7 +4,6 @@ import {WallSegmentPool} from "../../pools/WallSegmentPool";
 import {Entity} from "@nova-engine/ecs";
 import {TileMapComponent} from "../../components/rendering/TileMapComponent";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
-import {TypedSprite} from "../../types/TypedSprite";
 
 @provide(WallEntityFactory)
 export class WallEntityFactory {
@@ -19,6 +18,10 @@ export class WallEntityFactory {
 
         let currentWidth = 0;
 
+        const frontEdge = this.wallSegmentPool.getSprite('FRONT_EDGE');
+        tileMapComponent.addSprite(frontEdge, currentWidth, 0);
+
+        currentWidth += frontEdge.sprite.texture.width;
         for (let i = 0; i < wallLength; i++) {
             const sprite = this.wallSegmentPool.getSprite('WINDOW');
 
@@ -26,14 +29,10 @@ export class WallEntityFactory {
             currentWidth += sprite.sprite.texture.width;
         }
 
-        return entity;
-    }
+        const backEdge = this.wallSegmentPool.getSprite('BACK_EDGE');
+        tileMapComponent.addSprite(backEdge, currentWidth, 0);
 
-    public deconstructWall(tileMapComponent: TileMapComponent) {
-        tileMapComponent.sprites.forEach((sprite: TypedSprite) => {
-            if (sprite.type === 'WINDOW') {
-                this.wallSegmentPool.giveBackSprite(sprite);
-            }
-        });
+
+        return entity;
     }
 }
