@@ -33,13 +33,13 @@ export class SideScrollingCameraRenderingSystem extends System {
 
             if (entity.hasComponent(WorldPositionComponent)) {
                 const worldPositionComponent = entity.getComponent(WorldPositionComponent);
-                const dX = (worldPositionComponent.x - this.cameraSystem.x) * this.renderApplication.scale;
-                const dY = worldPositionComponent.y - this.cameraSystem.y * this.renderApplication.scale;
+                const dX = worldPositionComponent.x - this.cameraSystem.x;
+                const dY = worldPositionComponent.y - this.cameraSystem.y;
 
                 renderableComponent.setScreenPosition(dX, dY);
 
             } else {
-                renderableComponent.setScreenPosition(this.cameraSystem.x * this.renderApplication.scale, 0);
+                renderableComponent.setScreenPosition(this.cameraSystem.x, 0);
             }
         });
     }

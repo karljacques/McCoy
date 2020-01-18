@@ -1,4 +1,4 @@
-import {Engine, Entity, Family, FamilyBuilder, System} from "@nova-engine/ecs";
+import {Engine, Entity, System} from "@nova-engine/ecs";
 import {inject} from "inversify";
 import {WallEntityFactory} from "../../factories/game/WallEntityFactory";
 import {CameraSystem} from "../../services/CameraSystem";
@@ -19,9 +19,9 @@ export class WallEntityGenerationSystem extends System {
         // Should entities be unloaded?
         this.wallEntities.forEach((entity: Entity, index) => {
             const spriteComponent = entity.getComponent(TileMapComponent);
+            const worldPositionComponent = entity.getComponent(WorldPositionComponent);
 
-            console.log(this.cameraSystem.x);
-            if (spriteComponent.boundingBox.maxX < this.cameraSystem.x) {
+            if (worldPositionComponent.x + spriteComponent.boundingBox.maxX < this.cameraSystem.x) {
                 this.wallEntityFactory.deconstructWall(spriteComponent);
                 this.wallEntities.splice(index, 1);
                 console.log('DESTROYING_WALL_ENTITY');
@@ -29,20 +29,37 @@ export class WallEntityGenerationSystem extends System {
 
         });
 
-        if (this.wallEntities.length === 0) {
+        if (this.wallEntities.length < 3) {
+            console.log('CREATING_WALL_ENTITY');
             const wallEntity = this.wallEntityFactory.createWall();
             this.wallEntities.push(wallEntity);
 
             const position = wallEntity.getComponent(WorldPositionComponent);
-            position.x = this.cameraSystem.x - 100;
+            position.x = this.getNextWallPosition();
             position.y = 196;
 
             this.renderApplication.getStage().addChild(
                 wallEntity.getComponent(TileMapComponent).stage
             );
             engine.addEntity(wallEntity);
-            console.log('CREATING_WALL_ENTITY');
-            console.log(position);
         }
+
+
+    }
+
+    protected getNextWallPosition(): number {
+        // Get the last entity in the list, work out its far edge
+        const lastWallEntity = this.wallEntities.slice(-1)[0];
+
+        if (lastWallEntity) {
+            const worldPositionComponent = lastWallEntity.getComponent(WorldPositionComponent);
+            const tileMapComponent = lastWallEntity.getComponent(TileMapComponent);
+
+            const furthestEdge = worldPositionComponent.x + tileMapComponent.boundingBox.maxX;
+
+            return furthestEdge + ((Math.random() * 20) + 5);
+        }
+
+        return this.cameraSystem.x + 100;
     }
 }

@@ -20,8 +20,8 @@ export class WallSegmentPool {
         this.createSprites('decoration_02', 6, 'DECORATION');
         this.createSprites('decoration_03', 6, 'DECORATION');
 
-        this.createSprites('edge_01', 2, 'FRONT_EDGE');
-        this.createSprites('edge_02', 2, 'BACK_EDGE', true);
+        this.createSprites('edge_01', 3, 'FRONT_EDGE');
+        this.createSprites('edge_02', 3, 'BACK_EDGE', true);
 
 
         for (let key in this._spriteTypes) {
