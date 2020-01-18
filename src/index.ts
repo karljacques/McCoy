@@ -8,9 +8,14 @@ import {Container as PIXIContainer} from 'pixi.js';
 import './styles/main.css';
 import {SideScrollingBackgroundLayerFactory} from "./factories/render/SideScrollingBackgroundLayerFactory";
 import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerComponent";
-import {WallEntityFactory} from "./factories/game/WallEntityFactory";
-import {TileMapComponent} from "./components/rendering/TileMapComponent";
-import {WorldPositionComponent} from "./components/WorldPositionComponent";
+import {WallEntityGenerationSystem} from "./system/entity/WallEntityGenerationSystem";
+
+// Remove the check for WebGL support, my Mac doesn't support stencilling
+// which we don't need anyway
+// @ts-ignore
+PIXI.Renderer.create = function create(options) {
+    return new PIXI.Renderer(options);
+};
 
 const container = new Container();
 
@@ -56,19 +61,14 @@ loader.load((loader, resources) => {
     engine.addEntity(bgMid);
     engine.addEntity(bgFar);
 
-    const wallEntityFactory = container.get(WallEntityFactory);
-    const entity = wallEntityFactory.createWall();
-
-    entity.getComponent(WorldPositionComponent).y = 196;
-
-    stage.addChild(entity.getComponent(TileMapComponent).stage);
-
-    engine.addEntity(entity);
-
     renderApplication.getTicker().add(() => {
         const elapsedMs = renderApplication.getTicker().elapsedMS;
         engine.update(elapsedMs);
     });
 
     renderApplication.getStage().addChild(stage);
+
+    const wallEntityGenerationSystem = container.get(WallEntityGenerationSystem);
+
+    engine.addSystem(wallEntityGenerationSystem);
 });

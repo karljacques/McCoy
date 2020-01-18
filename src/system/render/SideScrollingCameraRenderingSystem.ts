@@ -4,6 +4,7 @@ import {decorate, inject, injectable} from "inversify";
 import {sharedProvide} from "../../util/SharedProvide";
 import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
+import {CameraSystem} from "../../services/CameraSystem";
 
 // Eurgh, why does the parent have to be injectable?
 decorate(injectable(), System);
@@ -15,10 +16,9 @@ decorate(injectable(), System);
 @sharedProvide(SideScrollingCameraRenderingSystem)
 export class SideScrollingCameraRenderingSystem extends System {
     @inject(RenderApplication) protected renderApplication: RenderApplication;
+    @inject(CameraSystem) protected cameraSystem: CameraSystem;
 
     protected family: Family;
-    protected x = 0;
-    protected y = 0;
 
     onAttach(engine: Engine): void {
         this.family = new FamilyBuilder(engine).include(RenderableComponent).build();
@@ -26,20 +26,20 @@ export class SideScrollingCameraRenderingSystem extends System {
 
     update(engine: Engine, delta: number): void {
 
-        this.x -= 0.05 * delta;
+        this.cameraSystem.x += 0.05 * delta;
 
         this.family.entities.forEach((entity: Entity) => {
             const renderableComponent = entity.getComponent(RenderableComponent);
 
             if (entity.hasComponent(WorldPositionComponent)) {
                 const worldPositionComponent = entity.getComponent(WorldPositionComponent);
-                const dX = this.x - worldPositionComponent.x;
-                const dY = worldPositionComponent.y - this.y;
+                const dX = worldPositionComponent.x - this.cameraSystem.x;
+                const dY = worldPositionComponent.y - this.cameraSystem.y;
 
                 renderableComponent.setScreenPosition(dX, dY);
 
             } else {
-                renderableComponent.setScreenPosition(this.x, 0);
+                renderableComponent.setScreenPosition(this.cameraSystem.x, 0);
             }
         });
     }
