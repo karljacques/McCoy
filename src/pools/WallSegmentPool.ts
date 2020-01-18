@@ -23,6 +23,9 @@ export class WallSegmentPool {
         this.createSprites('edge_01', 3, 'FRONT_EDGE');
         this.createSprites('edge_02', 3, 'BACK_EDGE', true);
 
+        this.createSprites('step_01', 3, 'STEP_UP', true);
+        this.createSprites('step_01', 3, 'STEP_DOWN');
+
 
         for (let key in this._spriteTypes) {
             if (this._spriteTypes.hasOwnProperty(key)) {
@@ -41,8 +44,10 @@ export class WallSegmentPool {
     }
 
     public giveBackSprite(sprite: TypedSprite): void {
-        sprite.sprite.position.x = 0;
-        sprite.sprite.position.y = 0;
+        sprite.sprite.position.x = -1000;
+        sprite.sprite.position.y = -1000;
+        sprite.sprite.visible = false;
+
 
         this._spriteTypes[sprite.type].push(sprite.sprite);
     }
@@ -58,6 +63,7 @@ export class WallSegmentPool {
                 sprite.anchor.x = 1;
                 sprite.scale.x = -1;
             }
+            sprite.visible = false;
             this._spriteTypes[type].push(sprite);
         }
     }

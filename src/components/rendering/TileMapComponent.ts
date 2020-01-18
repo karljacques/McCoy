@@ -31,7 +31,7 @@ export class TileMapComponent extends RenderableComponent {
         this.boundingBox.minX = Math.min(x, this.boundingBox.minX);
         this.boundingBox.minY = Math.min(y, this.boundingBox.minY);
 
-        this.boundingBox.maxX = Math.max(this.boundingBox.maxX, x + (sprite.sprite.width));
+        this.boundingBox.maxX = Math.max(this.boundingBox.maxX, x + sprite.sprite.width);
         this.boundingBox.maxY = Math.max(this.boundingBox.maxY, y + sprite.sprite.height);
 
         this._sprites.push(sprite);

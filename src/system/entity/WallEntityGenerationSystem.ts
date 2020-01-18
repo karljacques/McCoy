@@ -32,32 +32,32 @@ export class WallEntityGenerationSystem extends System {
         if (this.wallEntities.length < 3) {
             console.log('CREATING_WALL_ENTITY');
             const wallEntity = this.wallEntityFactory.createWall();
-            this.wallEntities.push(wallEntity);
 
             const position = wallEntity.getComponent(WorldPositionComponent);
+
             position.x = this.getNextWallPosition();
-            position.y = 196;
 
             this.renderApplication.getStage().addChild(
                 wallEntity.getComponent(TileMapComponent).stage
             );
+
+            this.wallEntities.push(wallEntity);
             engine.addEntity(wallEntity);
         }
-
-
     }
 
     protected getNextWallPosition(): number {
         // Get the last entity in the list, work out its far edge
         const lastWallEntity = this.wallEntities.slice(-1)[0];
 
+        console.log(lastWallEntity);
         if (lastWallEntity) {
             const worldPositionComponent = lastWallEntity.getComponent(WorldPositionComponent);
             const tileMapComponent = lastWallEntity.getComponent(TileMapComponent);
 
-            const furthestEdge = worldPositionComponent.x + tileMapComponent.boundingBox.maxX;
-
-            return furthestEdge + ((Math.random() * 20) + 5);
+            const furthestEdge = tileMapComponent.boundingBox.maxX;
+            console.log(furthestEdge);
+            return worldPositionComponent.x + furthestEdge + (Math.random() * 20) + 5;
         }
 
         return this.cameraSystem.x + 100;
