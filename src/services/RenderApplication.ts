@@ -6,6 +6,8 @@ export class RenderApplication {
     static readonly WIDTH = 512;
     static readonly HEIGHT = 384;
 
+    private _stageScale: number;
+
     protected application = new Application({
         resolution: devicePixelRatio
     });
@@ -68,5 +70,15 @@ export class RenderApplication {
 
         // This command scales the stage to fit the new size of the game.
         this.application.stage.scale.set(nvw / RenderApplication.WIDTH, nvh / RenderApplication.HEIGHT);
+
+        this._stageScale = RenderApplication.WIDTH / nvw;
+
+        // @ts-ignore
+        window.scale = this._stageScale;
+    }
+
+
+    get scale(): number {
+        return this._stageScale;
     }
 }

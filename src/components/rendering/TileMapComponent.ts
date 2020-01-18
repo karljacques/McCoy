@@ -1,11 +1,14 @@
 import {RenderableComponent} from "./RenderableComponent";
 import {TypedSprite} from "../../types/TypedSprite";
 import Container = PIXI.Container;
+import Bounds = PIXI.Bounds;
 
 export class TileMapComponent extends RenderableComponent {
     private _sprites: Array<TypedSprite> = [];
 
     private _stage: Container = new Container();
+
+    public boundingBox: Bounds = new Bounds();
 
     get stage(): PIXI.Container {
         return this._stage;
@@ -24,6 +27,14 @@ export class TileMapComponent extends RenderableComponent {
         this._stage.addChild(sprite.sprite);
         sprite.sprite.position.x = x;
         sprite.sprite.position.y = y;
+
+        this.boundingBox.minX = Math.min(x, this.boundingBox.minX);
+        this.boundingBox.minY = Math.min(y, this.boundingBox.minY);
+
+        // @ts-ignore
+        this.boundingBox.maxX = Math.max(this.boundingBox.maxX, x + (sprite.sprite.width * (1/window.scale)));
+       // @ts-ignore
+        this.boundingBox.maxY = Math.max(this.boundingBox.maxY, y + (sprite.sprite.height * (1/window.scale)));
 
         this._sprites.push(sprite);
     }

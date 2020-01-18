@@ -11,6 +11,7 @@ import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerCo
 import {WallEntityFactory} from "./factories/game/WallEntityFactory";
 import {TileMapComponent} from "./components/rendering/TileMapComponent";
 import {WorldPositionComponent} from "./components/WorldPositionComponent";
+import {WallEntityGenerationSystem} from "./system/entity/WallEntityGenerationSystem";
 
 const container = new Container();
 
@@ -56,19 +57,14 @@ loader.load((loader, resources) => {
     engine.addEntity(bgMid);
     engine.addEntity(bgFar);
 
-    const wallEntityFactory = container.get(WallEntityFactory);
-    const entity = wallEntityFactory.createWall();
-
-    entity.getComponent(WorldPositionComponent).y = 196;
-
-    stage.addChild(entity.getComponent(TileMapComponent).stage);
-
-    engine.addEntity(entity);
-
     renderApplication.getTicker().add(() => {
         const elapsedMs = renderApplication.getTicker().elapsedMS;
         engine.update(elapsedMs);
     });
 
     renderApplication.getStage().addChild(stage);
+
+    const wallEntityGenerationSystem = container.get(WallEntityGenerationSystem);
+
+    engine.addSystem(wallEntityGenerationSystem);
 });

@@ -23,6 +23,6 @@ export class BackgroundLayerComponent extends RenderableComponent {
     }
 
     setScreenPosition(x: number, y: number): void {
-        this.sprite.tilePosition.x = x / this.distance;
+        this.sprite.tilePosition.x = -x / this.distance;
     }
 }
