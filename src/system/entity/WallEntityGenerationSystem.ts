@@ -50,13 +50,11 @@ export class WallEntityGenerationSystem extends System {
         // Get the last entity in the list, work out its far edge
         const lastWallEntity = this.wallEntities.slice(-1)[0];
 
-        console.log(lastWallEntity);
         if (lastWallEntity) {
             const worldPositionComponent = lastWallEntity.getComponent(WorldPositionComponent);
             const tileMapComponent = lastWallEntity.getComponent(TileMapComponent);
 
             const furthestEdge = tileMapComponent.boundingBox.maxX;
-            console.log(furthestEdge);
             return worldPositionComponent.x + furthestEdge + (Math.random() * 20) + 5;
         }
 

@@ -13,7 +13,11 @@ import {UserInputService} from "./services/input/UserInputService";
 import {CameraControlSystem} from "./system/camera/CameraControlSystem";
 import {SimpleRenderableComponent} from "./components/rendering/SimpleRenderableComponent";
 import {WorldPositionComponent} from "./components/WorldPositionComponent";
-import AnimatedSprite = PIXI.AnimatedSprite;
+import {ControllableComponent} from "./components/input/ControllableComponent";
+import {ControllableHandlerSystem} from "./system/entity/ControllableHandlerSystem";
+import {CharacterAnimationSystem} from "./system/entity/CharacterAnimationSystem";
+import {CharacterAnimationComponent} from "./components/CharacterAnimationComponent";
+import {CharacterSpriteFactory} from "./factories/game/CharacterSpriteFactory";
 
 // Remove the check for WebGL support, my Mac doesn't support stencilling
 // which we don't need anyway
@@ -41,7 +45,7 @@ const inputService = container.get(UserInputService);
 inputService.addEventListener(cameraControlSystem);
 
 engine.addSystem(renderingSystem);
-engine.addSystem(cameraControlSystem);
+// engine.addSystem(cameraControlSystem);
 
 const renderApplication = container.get(RenderApplication);
 const loader = renderApplication.getLoader();
@@ -87,20 +91,28 @@ loader.load((loader, resources) => {
     const bunnyEntity = new Entity();
     const simpleRenderableComponent = bunnyEntity.putComponent(SimpleRenderableComponent);
     const worldPositionComponent = bunnyEntity.putComponent(WorldPositionComponent);
+    const controllableComponent = bunnyEntity.putComponent(ControllableComponent);
+    bunnyEntity.putComponent(CharacterAnimationComponent);
+
+    controllableComponent.active = true;
 
     engine.addEntity(bunnyEntity);
 
-    worldPositionComponent.y = 196;
+    worldPositionComponent.y = 215;
     worldPositionComponent.x = 120;
-    // Here we create the animated bunny
-    const bunnySpriteSheet = loader.resources.bunny.spritesheet;
-    const bunny = new AnimatedSprite(bunnySpriteSheet.animations.idle);
 
+    const bunny = container.get(CharacterSpriteFactory).getCharacterAnimation('bunny', 'idle');
     simpleRenderableComponent.sprite = bunny;
-    simpleRenderableComponent.sprite.zIndex = 100000;
 
+    renderApplication.getStage().sortableChildren = true;
     renderApplication.getStage().addChild(bunny);
-    bunny.animationSpeed = 0.25;
-    bunny.play();
+
+    const controllableHandlerSystem = container.get(ControllableHandlerSystem);
+    inputService.addEventListener(controllableHandlerSystem);
+    engine.addSystem(controllableHandlerSystem);
+    engine.addEntity(bunnyEntity);
+
+    const characterAnimationSystem = container.get(CharacterAnimationSystem);
+    engine.addSystem(characterAnimationSystem);
 
 });

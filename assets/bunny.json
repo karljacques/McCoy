@@ -542,6 +542,9 @@
 		}
 	},
 	"animations": {
+		"jump": [
+			"jump"
+		],
 		"hit": [
 			"hit-0",
 			"hit-1",

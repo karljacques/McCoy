@@ -19,6 +19,7 @@ export class SideScrollingCameraRenderingSystem extends System {
     @inject(CameraSystem) protected cameraSystem: CameraSystem;
 
     protected family: Family;
+    public priority = 10000;
 
     onAttach(engine: Engine): void {
         this.family = new FamilyBuilder(engine).include(RenderableComponent).build();

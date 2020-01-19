@@ -19,6 +19,7 @@ export class RenderApplication {
         this.onResize();
 
         this.application.start();
+        this.getStage().sortableChildren = true;
     }
 
     public getLoader(): Loader {
