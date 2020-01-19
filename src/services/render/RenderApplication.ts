@@ -17,6 +17,8 @@ export class RenderApplication {
         document.body.appendChild(this.application.view);
 
         this.onResize();
+
+        this.application.start();
     }
 
     public getLoader(): Loader {

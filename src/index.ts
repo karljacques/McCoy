@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Engine} from "@nova-engine/ecs";
+import {Engine, Entity} from "@nova-engine/ecs";
 import {SideScrollingCameraRenderingSystem} from "./system/render/SideScrollingCameraRenderingSystem";
 import {Container} from "inversify";
 import {buildProviderModule} from "inversify-binding-decorators";
@@ -11,6 +11,9 @@ import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerCo
 import {WallEntityGenerationSystem} from "./system/entity/WallEntityGenerationSystem";
 import {UserInputService} from "./services/input/UserInputService";
 import {CameraControlSystem} from "./system/camera/CameraControlSystem";
+import {SimpleRenderableComponent} from "./components/rendering/SimpleRenderableComponent";
+import {WorldPositionComponent} from "./components/WorldPositionComponent";
+import AnimatedSprite = PIXI.AnimatedSprite;
 
 // Remove the check for WebGL support, my Mac doesn't support stencilling
 // which we don't need anyway
@@ -47,6 +50,7 @@ loader.add('bgFar', 'assets/bg-far.png');
 loader.add('bgMid', 'assets/bg-mid.png');
 
 loader.add('wall', 'assets/wall.json');
+loader.add('bunny', 'assets/bunny.json');
 
 loader.load((loader, resources) => {
     const stage = new PIXIContainer();
@@ -68,6 +72,7 @@ loader.load((loader, resources) => {
     engine.addEntity(bgMid);
     engine.addEntity(bgFar);
 
+
     renderApplication.getTicker().add(() => {
         const elapsedMs = renderApplication.getTicker().elapsedMS;
         engine.update(elapsedMs);
@@ -78,4 +83,24 @@ loader.load((loader, resources) => {
     const wallEntityGenerationSystem = container.get(WallEntityGenerationSystem);
 
     engine.addSystem(wallEntityGenerationSystem);
+
+    const bunnyEntity = new Entity();
+    const simpleRenderableComponent = bunnyEntity.putComponent(SimpleRenderableComponent);
+    const worldPositionComponent = bunnyEntity.putComponent(WorldPositionComponent);
+
+    engine.addEntity(bunnyEntity);
+
+    worldPositionComponent.y = 196;
+    worldPositionComponent.x = 120;
+    // Here we create the animated bunny
+    const bunnySpriteSheet = loader.resources.bunny.spritesheet;
+    const bunny = new AnimatedSprite(bunnySpriteSheet.animations.idle);
+
+    simpleRenderableComponent.sprite = bunny;
+    simpleRenderableComponent.sprite.zIndex = 100000;
+
+    renderApplication.getStage().addChild(bunny);
+    bunny.animationSpeed = 0.25;
+    bunny.play();
+
 });
