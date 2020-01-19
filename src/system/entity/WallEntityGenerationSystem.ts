@@ -1,10 +1,10 @@
 import {Engine, Entity, System} from "@nova-engine/ecs";
 import {inject} from "inversify";
 import {WallEntityFactory} from "../../factories/game/WallEntityFactory";
-import {CameraSystem} from "../../services/CameraSystem";
+import {CameraSystem} from "../../services/render/CameraSystem";
 import {TileMapComponent} from "../../components/rendering/TileMapComponent";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
-import {RenderApplication} from "../../services/RenderApplication";
+import {RenderApplication} from "../../services/render/RenderApplication";
 import {sharedProvide} from "../../util/SharedProvide";
 
 @sharedProvide(WallEntityGenerationSystem)

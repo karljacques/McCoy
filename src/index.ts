@@ -3,12 +3,14 @@ import {Engine} from "@nova-engine/ecs";
 import {SideScrollingCameraRenderingSystem} from "./system/render/SideScrollingCameraRenderingSystem";
 import {Container} from "inversify";
 import {buildProviderModule} from "inversify-binding-decorators";
-import {RenderApplication} from "./services/RenderApplication";
+import {RenderApplication} from "./services/render/RenderApplication";
 import {Container as PIXIContainer} from 'pixi.js';
 import './styles/main.css';
 import {SideScrollingBackgroundLayerFactory} from "./factories/render/SideScrollingBackgroundLayerFactory";
 import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerComponent";
 import {WallEntityGenerationSystem} from "./system/entity/WallEntityGenerationSystem";
+import {UserInputService} from "./services/input/UserInputService";
+import {CameraControlSystem} from "./system/camera/CameraControlSystem";
 
 // Remove the check for WebGL support, my Mac doesn't support stencilling
 // which we don't need anyway
@@ -30,8 +32,13 @@ const engine = new Engine();
 // The engine will call the update() method of the system every game loop
 // It also calls the onAttach hook
 const renderingSystem = container.get(SideScrollingCameraRenderingSystem);
+const cameraControlSystem = container.get(CameraControlSystem);
+const inputService = container.get(UserInputService);
+
+inputService.addEventListener(cameraControlSystem);
 
 engine.addSystem(renderingSystem);
+engine.addSystem(cameraControlSystem);
 
 const renderApplication = container.get(RenderApplication);
 const loader = renderApplication.getLoader();

@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {RenderApplication} from "../../services/RenderApplication";
+import {RenderApplication} from "../../services/render/RenderApplication";
 import Sprite = PIXI.Sprite;
 import Loader = PIXI.Loader;
 

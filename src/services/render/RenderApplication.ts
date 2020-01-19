@@ -1,5 +1,5 @@
 import {Application, Container, Loader, Renderer, Ticker} from 'pixi.js';
-import {sharedProvide} from "../util/SharedProvide";
+import {sharedProvide} from "../../util/SharedProvide";
 
 @sharedProvide(RenderApplication)
 export class RenderApplication {

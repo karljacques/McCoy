@@ -1,4 +1,4 @@
-import {sharedProvide} from "../util/SharedProvide";
+import {sharedProvide} from "../../util/SharedProvide";
 
 @sharedProvide(CameraSystem)
 export class CameraSystem {
