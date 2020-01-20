@@ -42,10 +42,8 @@ const renderingSystem = container.get(SideScrollingCameraRenderingSystem);
 const cameraControlSystem = container.get(CameraControlSystem);
 const inputService = container.get(UserInputService);
 
-inputService.addEventListener(cameraControlSystem);
-
 engine.addSystem(renderingSystem);
-// engine.addSystem(cameraControlSystem);
+engine.addSystem(cameraControlSystem);
 
 const renderApplication = container.get(RenderApplication);
 const loader = renderApplication.getLoader();

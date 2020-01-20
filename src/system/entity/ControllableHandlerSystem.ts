@@ -22,7 +22,7 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl {
                 const worldPositionComponent = entity.getComponent(WorldPositionComponent);
 
                 const horizDir = +!!this.isMovingRight - +!!this.isMovingLeft;
-                const vertDir = +!!this.isMovingUp - +!!this.isMovingDown;
+                const vertDir = +!!this.isMovingDown - +!!this.isMovingUp;
 
                 worldPositionComponent.x += horizDir * delta * 0.2;
                 worldPositionComponent.y += vertDir * delta * 0.2;
