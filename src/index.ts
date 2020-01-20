@@ -18,6 +18,10 @@ import {CharacterAnimationSystem} from "./system/entity/CharacterAnimationSystem
 import {CharacterAnimationComponent} from "./components/CharacterAnimationComponent";
 import {CharacterSpriteFactory} from "./factories/game/CharacterSpriteFactory";
 import {WallGenerationSystem} from "./system/entity/WallGenerationSystem";
+import {Bodies, World} from "matter-js";
+import {PhysicsSystem} from "./system/PhysicsSystem";
+import {PhysicsComponent} from "./components/PhysicsComponent";
+import {PhysicsService} from "./services/PhysicsService";
 
 // Remove the check for WebGL support, my Mac doesn't support stencilling
 // which we don't need anyway
@@ -98,6 +102,7 @@ loader.load((loader, resources) => {
 
     const bunny = container.get(CharacterSpriteFactory).getCharacterAnimation('bunny', 'idle');
     simpleRenderableComponent.sprite = bunny;
+    bunny.anchor.set(0.5, 0.5);
 
     renderApplication.getStage().sortableChildren = true;
     renderApplication.getStage().addChild(bunny);
@@ -107,8 +112,14 @@ loader.load((loader, resources) => {
     engine.addSystem(controllableHandlerSystem);
     engine.addEntity(bunnyEntity);
 
+    const physicsComponent = bunnyEntity.putComponent(PhysicsComponent);
+    physicsComponent.box = Bodies.rectangle(100, -300, bunny.width, bunny.height);
+    World.add(container.get(PhysicsService).engine.world, [physicsComponent.box]);
+
+
     const characterAnimationSystem = container.get(CharacterAnimationSystem);
     engine.addSystem(characterAnimationSystem);
 
     engine.addSystem(container.get(WallGenerationSystem));
+    engine.addSystem(container.get(PhysicsSystem));
 });

@@ -4,6 +4,7 @@ import {inject} from "inversify";
 import {sharedProvide} from "../../util/SharedProvide";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
 import {RenderableComponent} from "../../components/rendering/RenderableComponent";
+import {PhysicsComponent} from "../../components/PhysicsComponent";
 
 @sharedProvide(WallGenerationSystem)
 export class WallGenerationSystem extends System {
@@ -11,7 +12,6 @@ export class WallGenerationSystem extends System {
     protected wallEntities: Array<Array<Entity>> = [];
 
     update(engine: Engine, delta: number): void {
-        debugger;
         if (this.wallEntities.length < 2) {
             const wallSlices = this.createNewWall(this.getLastWallOffset());
             this.wallEntities.push(wallSlices);
@@ -50,7 +50,9 @@ export class WallGenerationSystem extends System {
         slices.forEach((slice: Entity) => {
             const worldPositionComponent = slice.getComponent(WorldPositionComponent);
             const renderableComponent = slice.getComponent(RenderableComponent);
+            const physicsComponent = slice.getComponent(PhysicsComponent);
 
+            physicsComponent.box.position.x = baseOffset + wallOffset;
             worldPositionComponent.x = baseOffset + wallOffset;
             wallOffset += renderableComponent.sprite.width;
         });

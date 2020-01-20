@@ -28,9 +28,11 @@
   },
   "dependencies": {
     "@nova-engine/ecs": "github:karljacques/ecs#entity-change-listener-family",
+    "@types/matter-js": "^0.10.7",
     "inversify": "^5.0.1",
     "inversify-binding-decorators": "^4.0.0",
     "lerp": "^1.0.3",
+    "matter-js": "^0.14.2",
     "pixi.js": "^5.2.0",
     "reflect-metadata": "^0.1.13",
     "shuffle-array": "^1.0.1"
