@@ -2,24 +2,23 @@ import {inject, injectable} from "inversify";
 import {RenderApplication} from "../../services/render/RenderApplication";
 import Sprite = PIXI.Sprite;
 import Loader = PIXI.Loader;
+import {sharedProvide} from "../../util/SharedProvide";
 
-@injectable()
-export abstract class AbstractSpriteSheetFactory {
+@sharedProvide(SpriteSheetFactory)
+export class SpriteSheetFactory {
     protected loader: Loader;
 
     constructor(
         @inject(RenderApplication) renderApplication: RenderApplication
     ) {
         this.loader = renderApplication.getLoader();
-
-        this.loader.resources[this.getSpriteSheetName()].spritesheet.baseTexture.scaleMode =
-            PIXI.SCALE_MODES.NEAREST;
     }
 
-    abstract getSpriteSheetName(): string;
-
-    public createSprite(textureName: string): Sprite {
+    public createSprite(spritesheetName: string, textureName: string): Sprite {
         const resources = this.loader.resources;
-        return new Sprite(resources[this.getSpriteSheetName()].spritesheet.textures[textureName]);
+        const spritesheet = resources[spritesheetName].spritesheet;
+
+        spritesheet.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        return new Sprite(spritesheet.textures[textureName]);
     }
 }

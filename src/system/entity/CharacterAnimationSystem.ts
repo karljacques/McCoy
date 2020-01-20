@@ -1,7 +1,7 @@
 import {sharedProvide} from "../../util/SharedProvide";
 import {Engine, Entity, Family, FamilyBuilder, System} from "@nova-engine/ecs";
 import {CharacterAnimationComponent} from "../../components/CharacterAnimationComponent";
-import {SimpleRenderableComponent} from "../../components/rendering/SimpleRenderableComponent";
+import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 import {inject} from "inversify";
 import {RenderApplication} from "../../services/render/RenderApplication";
 import {CharacterSpriteFactory} from "../../factories/game/CharacterSpriteFactory";
@@ -21,7 +21,7 @@ export class CharacterAnimationSystem extends System {
             const characterAnimationComponent = entity.getComponent(CharacterAnimationComponent);
 
             if (characterAnimationComponent.stateChanged) {
-                const simpleRenderableComponent = entity.getComponent(SimpleRenderableComponent);
+                const simpleRenderableComponent = entity.getComponent(RenderableComponent);
 
                 let state = characterAnimationComponent.running ? 'run' : 'idle';
                 if (characterAnimationComponent.jumping) {

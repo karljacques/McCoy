@@ -2,9 +2,9 @@ import {Engine, Entity, Family, FamilyBuilder, System} from "@nova-engine/ecs";
 import {RenderApplication} from "../../services/render/RenderApplication";
 import {decorate, inject, injectable} from "inversify";
 import {sharedProvide} from "../../util/SharedProvide";
-import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
 import {CameraSystem} from "../../services/render/CameraSystem";
+import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 
 // Eurgh, why does the parent have to be injectable?
 decorate(injectable(), System);

@@ -8,10 +8,9 @@ import {Container as PIXIContainer} from 'pixi.js';
 import './styles/main.css';
 import {SideScrollingBackgroundLayerFactory} from "./factories/render/SideScrollingBackgroundLayerFactory";
 import {BackgroundLayerComponent} from "./components/rendering/BackgroundLayerComponent";
-import {WallEntityGenerationSystem} from "./system/entity/WallEntityGenerationSystem";
 import {UserInputService} from "./services/input/UserInputService";
 import {CameraControlSystem} from "./system/camera/CameraControlSystem";
-import {SimpleRenderableComponent} from "./components/rendering/SimpleRenderableComponent";
+import {RenderableComponent} from "./components/rendering/RenderableComponent";
 import {WorldPositionComponent} from "./components/WorldPositionComponent";
 import {ControllableComponent} from "./components/input/ControllableComponent";
 import {ControllableHandlerSystem} from "./system/entity/ControllableHandlerSystem";
@@ -82,12 +81,9 @@ loader.load((loader, resources) => {
 
     renderApplication.getStage().addChild(stage);
 
-    const wallEntityGenerationSystem = container.get(WallEntityGenerationSystem);
-
-    engine.addSystem(wallEntityGenerationSystem);
 
     const bunnyEntity = new Entity();
-    const simpleRenderableComponent = bunnyEntity.putComponent(SimpleRenderableComponent);
+    const simpleRenderableComponent = bunnyEntity.putComponent(RenderableComponent);
     const worldPositionComponent = bunnyEntity.putComponent(WorldPositionComponent);
     const controllableComponent = bunnyEntity.putComponent(ControllableComponent);
     bunnyEntity.putComponent(CharacterAnimationComponent);
