@@ -17,6 +17,7 @@ import {ControllableHandlerSystem} from "./system/entity/ControllableHandlerSyst
 import {CharacterAnimationSystem} from "./system/entity/CharacterAnimationSystem";
 import {CharacterAnimationComponent} from "./components/CharacterAnimationComponent";
 import {CharacterSpriteFactory} from "./factories/game/CharacterSpriteFactory";
+import {WallGenerationSystem} from "./system/entity/WallGenerationSystem";
 
 // Remove the check for WebGL support, my Mac doesn't support stencilling
 // which we don't need anyway
@@ -92,7 +93,7 @@ loader.load((loader, resources) => {
 
     engine.addEntity(bunnyEntity);
 
-    worldPositionComponent.y = 215;
+    worldPositionComponent.y = 15;
     worldPositionComponent.x = 120;
 
     const bunny = container.get(CharacterSpriteFactory).getCharacterAnimation('bunny', 'idle');
@@ -109,4 +110,5 @@ loader.load((loader, resources) => {
     const characterAnimationSystem = container.get(CharacterAnimationSystem);
     engine.addSystem(characterAnimationSystem);
 
+    engine.addSystem(container.get(WallGenerationSystem));
 });

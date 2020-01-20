@@ -1,9 +1,8 @@
 import {provide} from "inversify-binding-decorators";
-import {WallSpriteFactory} from "../factories/game/WallSpriteFactory";
 import {inject} from "inversify";
 import {TypedSprite} from "../types/TypedSprite";
-import Sprite = PIXI.Sprite;
 import {SpriteSheetFactory} from "../factories/render/SpriteSheetFactory";
+import Sprite = PIXI.Sprite;
 
 const shuffle = require('shuffle-array');
 
@@ -37,7 +36,7 @@ export class WallSegmentPool {
 
     public getSprite(type: string): TypedSprite {
         const sprite = this._spriteTypes[type].pop();
-
+        sprite.visible = true;
         return {
             sprite,
             type

@@ -1,11 +1,10 @@
 import Sprite = PIXI.Sprite;
 import {Component} from "@nova-engine/ecs";
-import DisplayObject = PIXI.DisplayObject;
 
 export class RenderableComponent implements Component {
     static tag = 'RenderableComponent';
 
-     protected _sprite: DisplayObject;
+     protected _sprite: Sprite;
 
     get sprite() {
         return this._sprite;
