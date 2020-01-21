@@ -5,6 +5,8 @@ import {sharedProvide} from "../../util/SharedProvide";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
 import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 import {PhysicsComponent} from "../../components/PhysicsComponent";
+import * as Matter from "matter-js";
+import {Vector} from "matter-js";
 
 @sharedProvide(WallGenerationSystem)
 export class WallGenerationSystem extends System {
@@ -52,9 +54,10 @@ export class WallGenerationSystem extends System {
             const renderableComponent = slice.getComponent(RenderableComponent);
             const physicsComponent = slice.getComponent(PhysicsComponent);
 
-            physicsComponent.box.position.x = baseOffset + wallOffset;
             worldPositionComponent.x = baseOffset + wallOffset;
             wallOffset += renderableComponent.sprite.width;
+            Matter.Body.setPosition(physicsComponent.box, Vector.create(worldPositionComponent.x, 0));
+
         });
         return slices;
     }

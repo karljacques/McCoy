@@ -1,9 +1,11 @@
 import {Engine, Entity, Family, FamilyBuilder} from "@nova-engine/ecs";
 import {AbstractDirectionalControl} from "./AbstractDirectionalControl";
 import {ControllableComponent} from "../../components/input/ControllableComponent";
-import {WorldPositionComponent} from "../../components/WorldPositionComponent";
 import {sharedProvide} from "../../util/SharedProvide";
 import {CharacterAnimationComponent} from "../../components/CharacterAnimationComponent";
+import {PhysicsComponent} from "../../components/PhysicsComponent";
+import * as Matter from "matter-js";
+import {Vector} from "matter-js";
 
 @sharedProvide(ControllableHandlerSystem)
 export class ControllableHandlerSystem extends AbstractDirectionalControl {
@@ -19,13 +21,19 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl {
             const controllableComponent = entity.getComponent(ControllableComponent);
 
             if (controllableComponent.active) {
-                const worldPositionComponent = entity.getComponent(WorldPositionComponent);
 
                 const horizDir = +!!this.isMovingRight - +!!this.isMovingLeft;
                 const vertDir = +!!this.isMovingDown - +!!this.isMovingUp;
 
-                worldPositionComponent.x += horizDir * delta * 0.2;
-                worldPositionComponent.y += vertDir * delta * 0.2;
+                const physicsComponent = entity.getComponent(PhysicsComponent);
+
+                Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(horizDir * 0.5 * delta / 1000.0, vertDir * delta / 1000));
+                Matter.Body.setAngle(physicsComponent.box, 0);
+
+                if (physicsComponent.box.velocity.x > 1) {
+                    Matter.Body.setVelocity(physicsComponent.box, Vector.create(1, physicsComponent.box.velocity.y));
+                }
+
 
                 if (entity.hasComponent(CharacterAnimationComponent)) {
                     const characterAnimationComponent = entity.getComponent(CharacterAnimationComponent);

@@ -18,7 +18,7 @@ import {CharacterAnimationSystem} from "./system/entity/CharacterAnimationSystem
 import {CharacterAnimationComponent} from "./components/CharacterAnimationComponent";
 import {CharacterSpriteFactory} from "./factories/game/CharacterSpriteFactory";
 import {WallGenerationSystem} from "./system/entity/WallGenerationSystem";
-import {Bodies, World} from "matter-js";
+import {Bodies, Bounds, Render, Vector, World} from "matter-js";
 import {PhysicsSystem} from "./system/PhysicsSystem";
 import {PhysicsComponent} from "./components/PhysicsComponent";
 import {PhysicsService} from "./services/PhysicsService";
@@ -38,6 +38,25 @@ container.load(buildProviderModule());
 // This is the game engine - a collection of Systems.
 // Systems operate on Components, an Entity consists of Components.
 const engine = new Engine();
+
+// If you enable DEBUG_PHYSICS, Matter.js will render its own interpretation of what's
+// going on
+const DEBUG_PHYSICS = true;
+
+if (DEBUG_PHYSICS) {
+    const physicsEngine = container.get(PhysicsService).engine;
+    const render = Render.create({
+        element: document.body,
+        engine: physicsEngine,
+        options: {
+            hasBounds: true
+        }
+    });
+
+    Bounds.translate(render.bounds, Vector.create(-200, -200));
+
+    Render.run(render);
+}
 
 // Instantiate our rendering system, which uses PixiJS and register it with the engine
 // The engine will call the update() method of the system every game loop

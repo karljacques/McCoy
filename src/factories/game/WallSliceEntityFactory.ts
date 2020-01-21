@@ -26,11 +26,12 @@ export class WallSliceEntityFactory {
         renderableComponent.sprite = this.wallSegmentPool.getSprite(type).sprite;
         renderableComponent.sprite.anchor.set(0.5, 0.5);
         this.renderApplication.getStage().addChild(renderableComponent.sprite);
-
+        console.log(renderableComponent.sprite.width);
+        console.log(renderableComponent.sprite.height);
         const physicsComponent = entity.putComponent(PhysicsComponent);
         physicsComponent.box = Bodies.rectangle(0,
             0,
-            100,
+            renderableComponent.sprite.width,
             renderableComponent.sprite.height,
             {
                 isStatic: true
