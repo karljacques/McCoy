@@ -23,11 +23,15 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl {
             if (controllableComponent.active) {
 
                 const horizDir = +!!this.isMovingRight - +!!this.isMovingLeft;
-                const vertDir = +!!this.isMovingDown - +!!this.isMovingUp;
-
                 const physicsComponent = entity.getComponent(PhysicsComponent);
 
-                Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(horizDir * 0.5 * delta / 1000.0, vertDir * delta / 1000));
+                if (this.isMovingUp && controllableComponent.onGround) {
+                    Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(0, -0.05));
+
+                    controllableComponent.onGround = false;
+                }
+
+                Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(horizDir * 0.5 * delta / 1000.0, 0));
                 Matter.Body.setAngle(physicsComponent.box, 0);
 
                 if (physicsComponent.box.velocity.x > 1) {
@@ -38,15 +42,16 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl {
                     Matter.Body.setVelocity(physicsComponent.box, Vector.create(-1, physicsComponent.box.velocity.y));
                 }
 
-                if (physicsComponent.box.velocity.y < -1) {
-                    Matter.Body.setVelocity(physicsComponent.box, Vector.create(physicsComponent.box.velocity.x, -1));
+                if (physicsComponent.box.velocity.y < -0.1) {
+                    controllableComponent.onGround = false;
                 }
 
                 if (entity.hasComponent(CharacterAnimationComponent)) {
                     const characterAnimationComponent = entity.getComponent(CharacterAnimationComponent);
 
                     characterAnimationComponent.running = Math.abs(horizDir) > 0;
-                    characterAnimationComponent.jumping = Math.abs(vertDir) > 0;
+
+                    characterAnimationComponent.jumping = !controllableComponent.onGround;
 
                     if (horizDir !== 0) {
                         characterAnimationComponent.directionX = horizDir;

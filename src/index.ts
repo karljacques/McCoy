@@ -18,7 +18,8 @@ import {CharacterAnimationSystem} from "./system/entity/CharacterAnimationSystem
 import {CharacterAnimationComponent} from "./components/CharacterAnimationComponent";
 import {CharacterSpriteFactory} from "./factories/game/CharacterSpriteFactory";
 import {WallGenerationSystem} from "./system/entity/WallGenerationSystem";
-import {Bodies, Bounds, Render, Vector, World} from "matter-js";
+import * as Matter from "matter-js";
+import {Bodies, Body, Bounds, Events, IEventCollision, IPair, Render, Vector, World} from "matter-js";
 import {PhysicsSystem} from "./system/PhysicsSystem";
 import {PhysicsComponent} from "./components/PhysicsComponent";
 import {PhysicsService} from "./services/PhysicsService";
@@ -132,7 +133,23 @@ loader.load((loader, resources) => {
     engine.addEntity(bunnyEntity);
 
     const physicsComponent = bunnyEntity.putComponent(PhysicsComponent);
-    physicsComponent.box = Bodies.rectangle(100, -300, bunny.width, bunny.height);
+
+    const jumpSensor = Bodies.rectangle(0, 20, bunny.width, 5, {
+        sleepThreshold: 99999999999,
+        isSensor: true
+    });
+    const body = Bodies.rectangle(0, 0, bunny.width, bunny.height);
+
+    physicsComponent.box = Body.create({
+        parts: [jumpSensor, body],
+        inertia: Infinity, // Prevents player rotation,
+        friction: 0.002,
+        //frictionStatic: 0.5,
+        sleepThreshold: Infinity,
+    });
+
+    Body.setPosition(physicsComponent.box, Vector.create(100, -300));
+
     World.add(container.get(PhysicsService).engine.world, [physicsComponent.box]);
 
 
@@ -141,4 +158,27 @@ loader.load((loader, resources) => {
 
     engine.addSystem(container.get(WallGenerationSystem));
     engine.addSystem(container.get(PhysicsSystem));
+
+    function playerOnGroundCheck(event: Matter.IEventCollision<Matter.Engine>) {
+        const controllableComponent = bunnyEntity.getComponent(ControllableComponent);
+
+        const pairs = event.pairs;
+
+        let numTouching = 0;
+
+        pairs.forEach((pair: IPair) => {
+            if (pair.bodyA === jumpSensor || pair.bodyB === jumpSensor) {
+                numTouching++;
+            }
+        });
+
+        if (numTouching > 0) {
+            controllableComponent.onGround = true;
+            console.log('onGround');
+        }
+    }
+
+    Events.on(container.get(PhysicsService).engine, "collisionStart", function (event: IEventCollision<Matter.Engine>) {
+        playerOnGroundCheck(event);
+    })
 });
