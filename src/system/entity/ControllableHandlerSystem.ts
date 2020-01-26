@@ -28,7 +28,6 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl implem
         const controllableComponent = entity.getComponent(ControllableComponent);
 
         Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(horizDir * 0.5 * delta / 1000.0, 0));
-        Matter.Body.setAngle(physicsComponent.box, 0);
 
         if (physicsComponent.box.velocity.x > 1) {
             Matter.Body.setVelocity(physicsComponent.box, Vector.create(1, physicsComponent.box.velocity.y));
@@ -66,8 +65,7 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl implem
                 const physicsComponent = entity.getComponent(PhysicsComponent);
 
                 if (this.isMovingUp && (controllableComponent.onGround || !controllableComponent.doubleJumpSpent)) {
-                    console.log(controllableComponent.doubleJumpSpent);
-                    console.log(controllableComponent.onGround ? 'onGround' : 'NotOnGround');
+
                     if (!controllableComponent.onGround) {
                         controllableComponent.doubleJumpSpent = true;
                     }
