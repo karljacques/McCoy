@@ -3,6 +3,7 @@ import {Component} from "@nova-engine/ecs";
 export class ControllableComponent implements Component {
     private _onGround = false;
     private _active: boolean;
+    private _doubleJumpSpent: boolean;
 
     get active(): boolean {
         return this._active;
@@ -27,7 +28,18 @@ export class ControllableComponent implements Component {
         return this._onGround;
     }
 
+    get doubleJumpSpent(): boolean {
+        return this._doubleJumpSpent;
+    }
+
+    set doubleJumpSpent(value: boolean) {
+        this._doubleJumpSpent = value;
+    }
+
     set onGround(value: boolean) {
+        if (value === true) {
+            this.doubleJumpSpent = false;
+        }
         this._onGround = value;
     }
 }
