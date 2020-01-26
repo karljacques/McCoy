@@ -34,6 +34,13 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl {
                     Matter.Body.setVelocity(physicsComponent.box, Vector.create(1, physicsComponent.box.velocity.y));
                 }
 
+                if (physicsComponent.box.velocity.x < -1) {
+                    Matter.Body.setVelocity(physicsComponent.box, Vector.create(-1, physicsComponent.box.velocity.y));
+                }
+
+                if (physicsComponent.box.velocity.y < -1) {
+                    Matter.Body.setVelocity(physicsComponent.box, Vector.create(physicsComponent.box.velocity.x, -1));
+                }
 
                 if (entity.hasComponent(CharacterAnimationComponent)) {
                     const characterAnimationComponent = entity.getComponent(CharacterAnimationComponent);
