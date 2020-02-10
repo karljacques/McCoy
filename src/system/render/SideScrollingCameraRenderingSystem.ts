@@ -1,10 +1,10 @@
 import {Engine, Entity, Family, FamilyBuilder, System} from "@nova-engine/ecs";
-import {RenderApplication} from "../../services/RenderApplication";
+import {RenderApplication} from "../../services/render/RenderApplication";
 import {decorate, inject, injectable} from "inversify";
 import {sharedProvide} from "../../util/SharedProvide";
-import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 import {WorldPositionComponent} from "../../components/WorldPositionComponent";
-import {CameraSystem} from "../../services/CameraSystem";
+import {CameraSystem} from "../../services/render/CameraSystem";
+import {RenderableComponent} from "../../components/rendering/RenderableComponent";
 
 // Eurgh, why does the parent have to be injectable?
 decorate(injectable(), System);
@@ -19,15 +19,13 @@ export class SideScrollingCameraRenderingSystem extends System {
     @inject(CameraSystem) protected cameraSystem: CameraSystem;
 
     protected family: Family;
+    public priority = 10000;
 
     onAttach(engine: Engine): void {
         this.family = new FamilyBuilder(engine).include(RenderableComponent).build();
     }
 
     update(engine: Engine, delta: number): void {
-
-        this.cameraSystem.x += 0.05 * delta;
-
         this.family.entities.forEach((entity: Entity) => {
             const renderableComponent = entity.getComponent(RenderableComponent);
 

@@ -1,5 +1,5 @@
 import {Application, Container, Loader, Renderer, Ticker} from 'pixi.js';
-import {sharedProvide} from "../util/SharedProvide";
+import {sharedProvide} from "../../util/SharedProvide";
 
 @sharedProvide(RenderApplication)
 export class RenderApplication {
@@ -17,6 +17,9 @@ export class RenderApplication {
         document.body.appendChild(this.application.view);
 
         this.onResize();
+
+        this.application.start();
+        this.getStage().sortableChildren = true;
     }
 
     public getLoader(): Loader {

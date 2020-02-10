@@ -1,7 +1,7 @@
 import {provide} from "inversify-binding-decorators";
-import {WallSpriteFactory} from "../factories/game/WallSpriteFactory";
 import {inject} from "inversify";
 import {TypedSprite} from "../types/TypedSprite";
+import {SpriteSheetFactory} from "../factories/render/SpriteSheetFactory";
 import Sprite = PIXI.Sprite;
 
 const shuffle = require('shuffle-array');
@@ -12,7 +12,7 @@ export class WallSegmentPool {
 
     protected _spriteTypes: Record<string, Array<Sprite>> = {};
 
-    constructor(@inject(WallSpriteFactory) protected wallSpriteFactory: WallSpriteFactory) {
+    constructor(@inject(SpriteSheetFactory) protected spriteSheetFactory: SpriteSheetFactory) {
         this.createSprites('window_01', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
         this.createSprites('window_02', WallSegmentPool.WINDOW_COUNT, 'WINDOW');
 
@@ -36,7 +36,7 @@ export class WallSegmentPool {
 
     public getSprite(type: string): TypedSprite {
         const sprite = this._spriteTypes[type].pop();
-
+        sprite.visible = true;
         return {
             sprite,
             type
@@ -58,7 +58,7 @@ export class WallSegmentPool {
         }
 
         for (let i = 0; i < count; i++) {
-            const sprite = this.wallSpriteFactory.createSprite(textureName);
+            const sprite = this.spriteSheetFactory.createSprite('wall', textureName);
             if (flip) {
                 sprite.anchor.x = 1;
                 sprite.scale.x = -1;
