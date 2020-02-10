@@ -33,7 +33,7 @@ export class CharacterAnimationComponent {
         this._jumping = value;
     }
 
-    private _directionX: number;
+    private _directionX: number = 1;
 
     get directionX(): number {
         return this._directionX;

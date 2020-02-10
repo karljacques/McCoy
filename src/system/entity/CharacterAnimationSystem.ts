@@ -12,6 +12,8 @@ export class CharacterAnimationSystem extends System {
     @inject(CharacterSpriteFactory) spriteFactory: CharacterSpriteFactory;
     protected family: Family;
 
+    public priority = 1;
+
     onAttach(engine: Engine): void {
         this.family = new FamilyBuilder(engine).include(CharacterAnimationComponent).build();
     }
@@ -21,12 +23,14 @@ export class CharacterAnimationSystem extends System {
             const characterAnimationComponent = entity.getComponent(CharacterAnimationComponent);
 
             if (characterAnimationComponent.stateChanged) {
+                console.log('STATE_CHANGED');
                 const simpleRenderableComponent = entity.getComponent(RenderableComponent);
 
                 let state = characterAnimationComponent.running ? 'run' : 'idle';
                 if (characterAnimationComponent.jumping) {
                     state = 'jump';
                 }
+                console.log(state);
 
                 const oldSprite = simpleRenderableComponent.sprite;
 
