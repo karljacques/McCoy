@@ -14,7 +14,7 @@ export class WallGenerationSystem extends System {
 
     update(engine: Engine, delta: number): void {
         if (this.wallEntities.length < 2) {
-            const wallSlices = this.createNewWall(this.getLastWallOffset());
+            const wallSlices = this.createNewWall(this.getLastWallOffset() + ((Math.random() * 200) - 50));
             this.wallEntities.push(wallSlices);
 
             wallSlices.forEach((slice: Entity) => {
