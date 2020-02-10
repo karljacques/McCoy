@@ -73,9 +73,10 @@ export class UserInputService {
     protected onKeyDown(event: KeyboardEvent): void {
         const key = event.key.toLowerCase();
 
-        this.keymap[key] = true;
-
-        this.dispatch('keydown', event);
+        if (!this.keymap[key]) {
+            this.keymap[key] = true;
+            this.dispatch('keydown', event);
+        }
     }
 
     protected onMouseDown(event: MouseEvent): void {
