@@ -67,9 +67,11 @@ export class ControllableHandlerSystem extends AbstractDirectionalControl implem
                 if (this.isMovingUp && (controllableComponent.onGround || !controllableComponent.doubleJumpSpent)) {
 
                     if (!controllableComponent.onGround) {
+                        // Nullify any y-velocity
+                        Matter.Body.setVelocity(physicsComponent.box, Vector.create(physicsComponent.box.velocity.x, 0));
                         controllableComponent.doubleJumpSpent = true;
                     }
-                    Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(0, -0.05));
+                    Matter.Body.applyForce(physicsComponent.box, Vector.create(physicsComponent.box.position.x, physicsComponent.box.position.y), Vector.create(0, -0.04));
 
                     controllableComponent.onGround = false;
                 }
